@@ -21,4 +21,30 @@ def iter_files(theme_dir: Path) -> Iterable[Path]:
 
 
 
+def safe_read_text(path: Path, limit_bytes: int) -> str:
+    data = path.read_bytes()
+    if len(data) > limit_bytes:
+        data = data[:limit_bytes]
+    try:
+        return data.decode("utf-8", errors="replace")
+    except Exception:
+        return ""
+
+
+def scan_theme(theme_dir: Path, max_files: int = 5000, max_bytes: int = 15_000_000) -> List[Finding]:
+    files = []
+    total_bytes = 0
+
+    for i, fp in enumerate(iter_files(theme_dir)):
+        if i >= max_files:
+            break
+        try:
+            st = fp.stat()
+        except OSError:
+            continue
+        total_bytes += st.st_size
+        if total_bytes > max_bytes:
+            break
+        files.append(fp)
+
 
