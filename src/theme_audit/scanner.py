@@ -29,7 +29,20 @@ def safe_read_text(path: Path, limit_bytes: int) -> str:
         return data.decode("utf-8", errors="replace")
     except Exception:
         return ""
+def run_asset_rules(relpath: str, fp: Path, inv: Inventory) -> List[Finding]:
+    out: List[Finding] = []
+    for rule in RULES:
+        if rule.applies_to == "asset":
+            out.extend(rule.check(relpath, fp, inv))
+    return out
 
+
+def run_cross_rules(inv: Inventory) -> List[Finding]:
+    out: List[Finding] = []
+    for rule in RULES:
+        if rule.applies_to == "cross":
+            out.extend(rule.check("__inventory__", "", inv))
+    return out
 
 def scan_theme(theme_dir: Path, max_files: int = 5000, max_bytes: int = 15_000_000) -> List[Finding]:
     files = []
