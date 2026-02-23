@@ -124,3 +124,19 @@ def build_inventory(theme_dir: Path, files: List[Path]) -> Inventory:
             except OSError:
                 asset_sizes[rel] = 0
 
+    return Inventory(
+        files=[str(f.relative_to(theme_dir)) for f in files],
+        text_files=text_files,
+        asset_files=asset_files,
+        assets_by_ext=assets_by_ext,
+        inline_script_hits=inline_script_hits,
+        inline_style_hits=inline_style_hits,
+        script_tags=script_tags,
+        img_tags=img_tags,
+        asset_sizes=asset_sizes,
+    )
+
+
+
+
+
