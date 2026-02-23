@@ -66,4 +66,33 @@ def scan_theme(theme_dir: Path, max_files: int = 5000, max_bytes: int = 15_000_0
     return findings
 
 
+@dataclass
+class Inventory:
+    files: List[str]
+    text_files: List[str]
+    asset_files: List[str]
+    assets_by_ext: dict
+    inline_script_hits: List[Tuple[str, int]]
+    inline_style_hits: List[Tuple[str, int]]
+    script_tags: List[Tuple[str, str]]  # (file, tag)
+    img_tags: List[Tuple[str, str]]     # (file, tag)
+    asset_sizes: dict  # relpath -> bytes
+
+
+def build_inventory(theme_dir: Path, files: List[Path]) -> Inventory:
+    text_files = []
+    asset_files = []
+    assets_by_ext = {}
+    inline_script_hits = []
+    inline_style_hits = []
+    script_tags = []
+    img_tags = []
+    asset_sizes = {}
+
+    script_tag_re = re.compile(r"<script\b[^>]*>", re.IGNORECASE)
+    img_tag_re = re.compile(r"<img\b[^>]*>", re.IGNORECASE)
+
+    inline_script_re = re.compile(r"<script\b[^>]*>(.*?)</script>", re.IGNORECASE | re.DOTALL)
+    inline_style_re = re.compile(r"<style\b[^>]*>(.*?)</style>", re.IGNORECASE | re.DOTALL)
+
 
