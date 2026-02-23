@@ -96,3 +96,31 @@ def build_inventory(theme_dir: Path, files: List[Path]) -> Inventory:
     inline_style_re = re.compile(r"<style\b[^>]*>(.*?)</style>", re.IGNORECASE | re.DOTALL)
 
 
+    for fp in files:
+        rel = str(fp.relative_to(theme_dir))
+        ext = fp.suffix.lower()
+
+        if ext in TEXT_EXTS:
+            text_files.append(rel)
+            txt = safe_read_text(fp, limit_bytes=800_000)
+
+            for m in script_tag_re.finditer(txt):
+                script_tags.append((rel, m.group(0)))
+
+            for m in img_tag_re.finditer(txt):
+                img_tags.append((rel, m.group(0)))
+
+            for m in inline_script_re.finditer(txt):
+                inline_script_hits.append((rel, len(m.group(1) or "")))
+            for m in inline_style_re.finditer(txt):
+                inline_style_hits.append((rel, len(m.group(1) or "")))
+
+        if ext in ASSET_EXTS:
+            asset_files.append(rel)
+            assets_by_ext.setdefault(ext, 0)
+            assets_by_ext[ext] += 1
+            try:
+                asset_sizes[rel] = fp.stat().st_size
+            except OSError:
+                asset_sizes[rel] = 0
+
