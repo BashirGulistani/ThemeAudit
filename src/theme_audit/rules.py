@@ -287,7 +287,15 @@ def rule_excessive_inline_blocks(file: str, _: str, inv) -> List[Finding]:
     return out
 
 
-
+RULES: List[Rule] = [
+    Rule(
+        id="A11Y001",
+        title="Image missing alt text",
+        applies_to="text",
+        severity="high",
+        description="Flags <img> tags without alt text.",
+        check=rule_missing_img_alt,
+    ),
 
 
 
