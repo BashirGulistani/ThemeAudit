@@ -321,6 +321,30 @@ RULES: List[Rule] = [
         description="Flags large inline script blocks that bloat HTML.",
         check=rule_inline_script_bloat,
     ),
+    Rule(
+        id="PERF004",
+        title="Large inline style block",
+        applies_to="text",
+        severity="medium",
+        description="Flags large inline style blocks that bloat HTML.",
+        check=rule_inline_style_bloat,
+    ),
+    Rule(
+        id="PERF010",
+        title="Large raster asset",
+        applies_to="asset",
+        severity="medium",
+        description="Flags large PNG/JPG/GIF images.",
+        check=rule_large_raster_assets,
+    ),
+    Rule(
+        id="BUDGET001",
+        title="High asset count",
+        applies_to="cross",
+        severity="medium",
+        description="Flags unusually high total asset counts.",
+        check=rule_asset_count_budget,
+    ),
 
 
 
