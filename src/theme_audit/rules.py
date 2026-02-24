@@ -346,7 +346,23 @@ RULES: List[Rule] = [
         check=rule_asset_count_budget,
     ),
 
-
+    Rule(
+        id="PERF020",
+        title="Multiple large inline scripts",
+        applies_to="cross",
+        severity="medium",
+        description="Flags many large inline script blocks across theme.",
+        check=rule_excessive_inline_blocks,
+    ),
+    Rule(
+        id="PERF021",
+        title="Multiple large inline styles",
+        applies_to="cross",
+        severity="medium",
+        description="Flags many large inline style blocks across theme.",
+        check=rule_excessive_inline_blocks,
+    ),
+]
 
 
 
