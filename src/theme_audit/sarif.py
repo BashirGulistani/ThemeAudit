@@ -24,4 +24,13 @@ def to_sarif_json(findings: List[Finding], repo_root: str = "") -> str:
             }
 
 
+    results = []
+    for f in findings:
+        if f.file == "__inventory__":
+            uri = "themeaudit://inventory"
+            region = {"startLine": 1, "startColumn": 1}
+        else:
+            uri = f.file
+            region = {"startLine": f.line, "startColumn": f.col}
+
 
