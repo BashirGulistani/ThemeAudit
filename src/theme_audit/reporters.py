@@ -53,5 +53,16 @@ def render_markdown(findings: List[Finding], theme_dir: str = "") -> str:
         rows.append(f"| **{f.severity}** | `{f.rule_id}` | {title} | {loc} | {msg} |")
 
 
+    guidance = [
+        "",
+        "## How to fix common issues",
+        "",
+        "- **Missing alt**: add meaningful `alt` text, or `alt=\"\"` if decorative.",
+        "- **Render-blocking scripts**: prefer `defer` for most scripts.",
+        "- **Large images**: resize to actual display size, compress, serve WebP/AVIF.",
+        "- **Inline bloat**: move big inline CSS/JS into assets to improve caching.",
+        "",
+    ]
 
+    return "\n".join(header + rows + guidance)
 
