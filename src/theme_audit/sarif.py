@@ -34,3 +34,19 @@ def to_sarif_json(findings: List[Finding], repo_root: str = "") -> str:
             region = {"startLine": f.line, "startColumn": f.col}
 
 
+        results.append(
+            {
+                "ruleId": f.rule_id,
+                "level": _SEV_TO_LEVEL.get(f.severity, "warning"),
+                "message": {"text": f"{f.title}: {f.message}"},
+                "locations": [
+                    {
+                        "physicalLocation": {
+                            "artifactLocation": {"uri": uri},
+                            "region": region,
+                        }
+                    }
+                ],
+            }
+        )
+
