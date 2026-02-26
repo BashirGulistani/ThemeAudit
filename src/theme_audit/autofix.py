@@ -52,5 +52,24 @@ def _insert_attr(tag: str, attr: str) -> str:
     return tag
 
 
+def _set_attr(tag: str, key: str, value: str) -> str:
+
+    key_l = key.lower()
+
+
+    def repl(m: re.Match) -> str:
+        k = (m.group(1) or "")
+        if k.lower() == key_l:
+
+            return f'{k}="{value}"'
+        return m.group(0)
+
+    new_tag, n = ATTR_RE.subn(repl, tag)
+    if n > 0 and key_l in _attrs(new_tag):
+        return new_tag
+
+
+    return _insert_attr(tag, f'{key}="{value}"')
+
 
 
