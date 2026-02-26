@@ -301,4 +301,15 @@ class AutoFixer:
         return out
 
 
+    def _backup_file(self, fp: Path) -> None:
+        ts = time.strftime("%Y%m%d-%H%M%S")
+        bak = fp.with_suffix(fp.suffix + f".bak.{ts}")
+        bak.write_bytes(fp.read_bytes())
+
+def _unified_diff(rel: str, before: str, after: str) -> str:
+    a = before.splitlines(keepends=True)
+    b = after.splitlines(keepends=True)
+    d = difflib.unified_diff(a, b, fromfile=f"{rel} (before)", tofile=f"{rel} (after)")
+    return "".join(d)
+
 
