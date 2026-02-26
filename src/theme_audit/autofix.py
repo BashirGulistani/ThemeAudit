@@ -116,4 +116,29 @@ class AutoFixer:
     AutoFixer scans files and produces Fix objects that can be applied.
     """
 
+    def __init__(
+        self,
+        theme_dir: Path,
+        backup: bool = True,
+        max_fixes_per_file: int = 200,
+        dry_run: bool = True,
+    ):
+        self.theme_dir = theme_dir
+        self.backup = backup
+        self.max_fixes_per_file = max_fixes_per_file
+        self.dry_run = dry_run
+
+    def iter_theme_files(self) -> Iterable[Path]:
+        for p in self.theme_dir.rglob("*"):
+            if p.is_file() and p.suffix.lower() in TEXT_EXTS:
+                yield p
+
+    def plan(self) -> List[Fix]:
+        fixes: List[Fix] = []
+        for fp in self.iter_theme_files():
+            rel = str(fp.relative_to(self.theme_dir))
+            text = _read_text(fp)
+            fixes.extend(self._plan_file(rel, text))
+        return fixes
+
 
