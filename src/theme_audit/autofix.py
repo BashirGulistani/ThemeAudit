@@ -104,3 +104,16 @@ class Fix:
     note: str = ""
 
 
+
+@dataclass
+class FixResult:
+    file: str
+    applied: int
+    diff: str
+
+class AutoFixer:
+    """
+    AutoFixer scans files and produces Fix objects that can be applied.
+    """
+
+
