@@ -19,6 +19,38 @@ ATTR_RE = re.compile(r'(\w[\w:-]*)\s*=\s*(".*?"|\'.*?\'|[^\s>]+)', re.IGNORECASE
 
 
 
+LIQUID_COMPLEX_RE = re.compile(r"{%|{{", re.IGNORECASE)
+
+def _read_text(p: Path) -> str:
+    return p.read_text(encoding="utf-8", errors="replace")
+
+def _write_text(p: Path, text: str) -> None:
+    p.write_text(text, encoding="utf-8")
+
+def _attrs(tag: str) -> Dict[str, str]:
+    attrs = {}
+    for m in ATTR_RE.finditer(tag):
+        k = (m.group(1) or "").lower()
+        v = (m.group(2) or "").strip().strip('"').strip("'")
+        attrs[k] = v
+    return attrs
+
+def _has_attr(tag: str, name: str) -> bool:
+
+    name_l = name.lower()
+    if re.search(rf"\b{name_l}\b", tag.lower()):
+
+        return True
+    return False
+
+def _insert_attr(tag: str, attr: str) -> str:
+
+    if tag.endswith("/>"):
+        return tag[:-2] + " " + attr + " />"
+    if tag.endswith(">"):
+        return tag[:-1] + " " + attr + ">"
+    return tag
+
 
 
 
