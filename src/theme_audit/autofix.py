@@ -312,4 +312,38 @@ def _unified_diff(rel: str, before: str, after: str) -> str:
     d = difflib.unified_diff(a, b, fromfile=f"{rel} (before)", tofile=f"{rel} (after)")
     return "".join(d)
 
+def summarize_fix_plan(fixes: List[Fix]) -> str:
+    if not fixes:
+        return "[fix] No safe auto-fixes found."
 
+    by_rule: Dict[str, int] = {}
+    by_file: Dict[str, int] = {}
+    for fx in fixes:
+        by_rule[fx.rule_id] = by_rule.get(fx.rule_id, 0) + 1
+        by_file[fx.file] = by_file.get(fx.file, 0) + 1
+
+    lines = []
+    lines.append(f"[fix] planned fixes: {len(fixes)}")
+    lines.append("[fix] by rule:")
+    for k in sorted(by_rule.keys()):
+        lines.append(f"  - {k}: {by_rule[k]}")
+    lines.append("[fix] top files:")
+    for f, n in sorted(by_file.items(), key=lambda x: x[1], reverse=True)[:10]:
+        lines.append(f"  - {f}: {n}")
+    return "\n".join(lines)
+
+def format_fix_results(results: List[FixResult], show_diff: bool = True, max_diff_chars: int = 120_000) -> str:
+    if not results:
+        return "[fix] Nothing applied."
+
+    lines = []
+    total = sum(r.applied for r in results)
+    lines.append(f"[fix] applied: {total} fixes across {len(results)} files")
+    for r in results:
+        lines.append(f"- {r.file}: {r.applied} fixes")
+        if show_diff:
+            diff = r.diff
+            if len(diff) > max_diff_chars:
+                diff = diff[:max_diff_chars] + "\n... (diff truncated)\n"
+            lines.append(diff)
+    return "\n".join(lines)
