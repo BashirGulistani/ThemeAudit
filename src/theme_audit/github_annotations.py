@@ -81,5 +81,11 @@ def print_github_annotations(findings: List[Finding], max_annotations: int = 200
     return f"[github] emitted {len(anns)} annotations" + (f" (skipped {skipped})" if skipped else "")
 
 
+def findings_to_check_run_json(findings: List[Finding], title: str = "ThemeAudit", max_items: int = 500) -> str:
+    """
+    Produces a generic JSON structure that other CI tools can consume.
+    Not GitHub-specific API — just a portable schema.
+    """
+    items = []
 
 
