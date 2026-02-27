@@ -36,6 +36,15 @@ def _normalize_path(path: str) -> str:
         return p
     return path
 
+@dataclass
+class Annotation:
+    level: str  
+    file: str
+    line: int
+    col: int
+    title: str
+    message: str
+
 
 
 
