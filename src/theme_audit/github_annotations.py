@@ -46,6 +46,24 @@ class Annotation:
     message: str
 
 
+def findings_to_annotations(findings: Iterable[Finding]) -> List[Annotation]:
+    ann: List[Annotation] = []
+    for f in findings:
+        if f.file == "__inventory__":
+            continue
+        level = _SEV_TO_CMD.get(f.severity, "warning")
+        ann.append(
+            Annotation(
+                level=level,
+                file=_normalize_path(f.file),
+                line=max(1, int(f.line)),
+                col=max(1, int(f.col)),
+                title=f"{f.rule_id} {f.title}",
+                message=f.message,
+            )
+        )
+    return ann
+
 
 
 
