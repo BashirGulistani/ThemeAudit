@@ -104,4 +104,16 @@ def findings_to_check_run_json(findings: List[Finding], title: str = "ThemeAudit
                 "help": f.help,
             }
         )
+    payload = {
+        "tool": title,
+        "count": len(items),
+        "items": items,
+    }
+    return json.dumps(payload, indent=2)
 
+def summarize_annotations(findings: List[Finding]) -> str:
+    anns = findings_to_annotations(findings)
+    c = {"error": 0, "warning": 0, "notice": 0}
+    for a in anns:
+        c[a.level] = c.get(a.level, 0) + 1
+    return f"[github] annotations ready: error={c['error']} warning={c['warning']} notice={c['notice']} total={len(anns)}"
