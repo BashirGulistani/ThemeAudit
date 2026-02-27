@@ -15,3 +15,28 @@ _SEV_TO_CMD = {"low": "notice", "medium": "warning", "high": "error"}
 
 
 
+def _escape(s: str) -> str:
+    if s is None:
+        return ""
+    return (
+        str(s)
+        .replace("%", "%25")
+        .replace("\r", "%0D")
+        .replace("\n", "%0A")
+        .replace(":", "%3A")
+        .replace(",", "%2C")
+    )
+
+def _normalize_path(path: str) -> str:
+    ws = os.getenv("GITHUB_WORKSPACE", "")
+    if ws and path.startswith(ws):
+        p = path[len(ws):]
+        if p.startswith("/") or p.startswith("\\"):
+            p = p[1:]
+        return p
+    return path
+
+
+
+
+
