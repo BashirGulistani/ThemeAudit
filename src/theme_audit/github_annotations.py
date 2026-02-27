@@ -89,3 +89,19 @@ def findings_to_check_run_json(findings: List[Finding], title: str = "ThemeAudit
     items = []
 
 
+    for f in findings:
+        if len(items) >= max_items:
+            break
+        items.append(
+            {
+                "rule_id": f.rule_id,
+                "severity": f.severity,
+                "title": f.title,
+                "message": f.message,
+                "file": f.file,
+                "line": f.line,
+                "col": f.col,
+                "help": f.help,
+            }
+        )
+
